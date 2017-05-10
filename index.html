@@ -17,11 +17,36 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.4/jquery.fullpage.min.js" integrity="sha256-r80qU2FgO31x7HtK2BQxYOQxPb45x+eKKhzA0OrepyM=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
   <script>
+    var getReleases = function(url, id) {
+      $.getJSON(url, function(data) {
+        var count = 0
+        var releases = []
+        $.each(data, function(k, v) {
+          if (count++ < 3) {
+            var html = '<h3>' + v.name + ' <small class="text-muted">Released by ' + v.author.login + '</small></h3>'
+            $.each(v.assets, function(k, v) {
+              html += '<a href="' + v.browser_download_url + '" target="_blank" class="btn btn-secondary" role="button"><i class="fa fa-download" aria-hidden="true"></i> ' + v.name + '</a>'
+            })
+            html += "<hr />"
+            releases.push(html)
+          }
+        })
+
+        $.each(releases, function(k, v) {
+          $('#' + id).append(v)
+        })
+      })
+    }
+
+    getReleases('https://api.github.com/repos/deskly/deskly-windows/releases', 'windows-download')
+  </script>
+  <script>
     $(document).ready(function() {
       $('#pages').fullpage({
-        anchors: ['about', 'projects', 'education'],
+        anchors: ['about', 'downloads-win'],
         lazyLoading: false,
         controlArrows: true,
+        navigation: true,
         scrollingSpeed: 500
       });
 
@@ -34,16 +59,22 @@
 
 <body>
   <div id="pages">
-    <div class="section">
+    <div class="section" data-menuanchor="about">
       <div class="text-center">
         <div class="col-md-6 offset-md-3 col-xl-5 offset-xl-3">
           <h1 class="display-1 wow bounceInUp">Deskly</h1>
           <p class="wow bounceInUp" data-wow-delay="0.2s">Bored of your desktop image? You've come to the right place! Deskly changes your desktop image from a random image pulled from various Subreddits.</p>
           <hr class="wow bounceInUp" data-wow-delay="0.4s" />
-          <a href="https://github.com/Deskly/Deskly-Windows/releases" target="_blank" class="btn btn-info wow bounceInUp" data-wow-delay="0.6s" role="button"><i class="fa fa-windows" aria-hidden="true"></i> Windows</a>
+          <a href="#downloads-win" class="btn btn-info wow bounceInUp" data-wow-delay="0.6s" role="button"><i class="fa fa-windows" aria-hidden="true"></i> Windows</a>
           <a href="https://github.com/Deskly/Deskly-MacOS/releases" target="_blank" class="btn btn-info wow bounceInUp" data-wow-delay="0.8s" role="button"><i class="fa fa-apple" aria-hidden="true"></i> MacOS</a>
           <a href="https://github.com/Deskly" target="_blank" class="btn btn-secondary wow bounceInUp" data-wow-delay="1s" role="button">View on <i class="fa fa-github" aria-hidden="true"></i> Github</a>
         </div>
+      </div>
+    </div>
+    <div class="section" data-menuanchor="downloads-win">
+      <div class="container col-md-8" id="windows-download">
+        <h2><i class="fa fa-windows" aria-hidden="true"></i> Windows</h2>
+        <hr />
       </div>
     </div>
   </div>
